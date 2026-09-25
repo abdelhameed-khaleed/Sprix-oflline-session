@@ -44,6 +44,17 @@
   }
   .soon{opacity:.55; pointer-events:none;}
   .soon .tag{background:var(--muted); color:#fff;}
+  .qr-card{
+    background:#ffffff; border-radius:20px; padding:22px; text-align:center;
+    box-shadow:0 12px 30px rgba(3,19,79,.15); border:1px solid rgba(0,0,0,.04);
+  }
+  .qr-card .tag{
+    display:inline-block; background:var(--yellow); color:var(--navy); font-weight:700;
+    font-size:11px; padding:4px 10px; border-radius:999px; letter-spacing:.5px; margin-bottom:12px;
+  }
+  .qr-card img{width:160px; height:160px; display:block; margin:0 auto;}
+  .qr-card p{margin:14px 0 0; color:#101423; font-weight:700; font-size:14px;}
+  .qr-card span{display:block; color:#5a6072; font-weight:500; font-size:12.5px; margin-top:4px;}
 </style>
 </head>
 <body>
@@ -65,6 +76,12 @@
       <p>Each team plans their character's chaotic week using a SMART goal and the Eisenhower Matrix.</p>
       <div class="go">Open mission board →</div>
     </a>
+    <div class="qr-card">
+      <span class="tag">SCAN TO JOIN</span>
+      <img src="qr.png" alt="QR code to open Sprix Offline Sessions">
+      <p>Scan with your phone camera</p>
+      <span>Opens this page on your device</span>
+    </div>
   </main>
 </body>
 </html>

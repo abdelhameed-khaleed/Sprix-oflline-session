@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Survive the Worst Week: Mission Board · ALX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#03134F; --blue:#0452F0; --purple:#5F3DC4; --yellow:#F5B700;
+    --bg:#f4f6fb; --card:#ffffff; --text:#101423; --muted:#5a6072; --line:rgba(3,19,79,.10);
+    --green:#1f9d55; --red:#c0392b; --orange:#d68910;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0a0f2b; --card:#121838; --text:#eef1ff; --muted:#a7adc9; --line:rgba(255,255,255,.10); }
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{font-family:'Poppins',Arial,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden;}
+  a{color:inherit;}
+  .backlink{display:inline-block; padding:14px 18px 0; font-size:13px; color:#cfd6ff; text-decoration:none; opacity:.8;}
+  header{
+    background:radial-gradient(circle at 80% 0%, var(--purple), var(--navy) 65%);
+    color:#fff; padding:8px 20px 40px; text-align:center; position:relative;
+  }
+  .wordmark{font-weight:800; letter-spacing:2px; opacity:.85; font-size:13px; text-transform:lowercase; margin-top:10px;}
+  .kicker{display:inline-block; margin-top:14px; background:var(--yellow); color:var(--navy); font-weight:800; font-size:11px; letter-spacing:1px; padding:5px 12px; border-radius:999px;}
+  h1{font-size:26px; margin:14px 0 6px; font-weight:800; line-height:1.25;}
+  header p.sub{margin:0 auto; max-width:340px; opacity:.85; font-size:14px; line-height:1.5;}
+
+  main{max-width:520px; margin:0 auto; padding:0 16px 70px; position:relative; z-index:1;}
+  section{margin-top:-22px; margin-bottom:26px;}
+  .panel{background:var(--card); border-radius:20px; padding:20px; box-shadow:0 14px 34px rgba(3,19,79,.14); border:1px solid var(--line);}
+  .section-label{font-size:11px; font-weight:800; letter-spacing:1.2px; color:var(--purple); margin-bottom:8px;}
+
+  /* character select */
+  .char-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .char-card{
+    background:var(--card); border:2px solid var(--line); border-radius:18px; padding:16px 10px; text-align:center;
+    cursor:pointer; transition:transform .15s ease, border-color .15s ease, box-shadow .2s ease;
+    box-shadow:0 8px 20px rgba(3,19,79,.10); animation:pop .4s ease both;
+  }
+  .char-card:active{transform:scale(.95);}
+  .char-card.active{border-color:var(--yellow); box-shadow:0 0 0 3px rgba(245,183,0,.25), 0 8px 20px rgba(3,19,79,.10);}
+  .char-card .av{font-size:36px; margin-bottom:6px;}
+  .char-card .nm{font-weight:800; font-size:15px;}
+  .char-card .tm{font-size:11px; color:var(--muted); font-weight:700; margin-top:2px;}
+  @keyframes pop{ from{opacity:0; transform:translateY(10px) scale(.98);} to{opacity:1; transform:none;} }
+
+  .mission-area{display:none;}
+  .mission-area.show{display:block; animation:pop .35s ease both;}
+
+  .bubble{background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:14px; font-style:italic; line-height:1.5; margin:10px 0;}
+  .mission-line{font-size:13.5px; color:var(--muted); line-height:1.6;}
+
+  /* card deck */
+  .deck-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .task-card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px; text-align:center;
+    box-shadow:0 6px 16px rgba(3,19,79,.08); animation:pop .4s ease both;
+  }
+  .task-card .code{
+    display:inline-block; background:var(--blue); color:#fff; font-weight:800; font-size:11px;
+    padding:3px 9px; border-radius:999px; margin-bottom:8px;
+  }
+  .task-card.extra .code{background:var(--purple);}
+  .task-card .em{font-size:28px; margin-bottom:6px;}
+  .task-card .tx{font-size:12.5px; font-weight:600; line-height:1.4;}
+  .task-card .day{font-size:11px; color:var(--muted); margin-top:4px;}
+  .extras-label{font-size:12.5px; font-weight:700; color:var(--purple); margin:18px 0 10px;}
+
+  /* smart goal */
+  .frame{
+    background:var(--bg); border:1px dashed var(--line); border-radius:14px; padding:14px; font-size:13.5px;
+    line-height:1.7; margin-bottom:14px;
+  }
+  .frame b{color:var(--blue);}
+  .smart-row{display:flex; gap:8px; justify-content:space-between;}
+  .smart-tag{
+    flex:1; background:var(--bg); border:2px solid var(--line); border-radius:12px; text-align:center;
+    padding:10px 2px; font-weight:800; font-size:16px; cursor:pointer; transition:transform .12s ease, border-color .15s ease, background .15s ease, color .15s ease;
+  }
+  .smart-tag:active{transform:scale(.9);}
+  .smart-tag.active{background:var(--purple); border-color:var(--purple); color:#fff;}
+  .smart-explain{
+    margin-top:12px; background:rgba(95,61,196,.1); border-left:3px solid var(--purple); border-radius:8px;
+    padding:10px 12px; font-size:13px; line-height:1.5; display:none;
+  }
+  .smart-explain.show{display:block; animation:pop .25s ease both;}
+
+  /* eisenhower */
+  .matrix{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0;}
+  .box{border-radius:14px; padding:12px; font-size:12.5px; font-weight:700; line-height:1.4; color:#fff;}
+  .box.do{background:var(--red);}
+  .box.sch{background:var(--blue);}
+  .box.shr{background:var(--orange);}
+  .box.drp{background:var(--muted);}
+  .box small{display:block; font-weight:500; opacity:.9; margin-top:4px; font-size:11px;}
+  .ask{font-size:13.5px; font-weight:700; text-align:center; margin:14px 0; color:var(--purple);}
+  .instr{font-size:13.5px; text-align:center; color:var(--muted);}
+
+  /* plot twist */
+  .twist-card{
+    border-radius:18px; padding:30px 16px; text-align:center; cursor:pointer; user-select:none;
+    background:linear-gradient(135deg,var(--navy),var(--purple)); color:#fff;
+    box-shadow:0 10px 26px rgba(3,19,79,.25); transition:transform .15s ease;
+    perspective:800px;
+  }
+  .twist-card:active{transform:scale(.97);}
+  .twist-card .lock{font-size:38px; margin-bottom:10px;}
+  .twist-card .lbl{font-weight:800; font-size:15px;}
+  .twist-card .hint{font-size:12px; opacity:.8; margin-top:6px;}
+  .twist-revealed{
+    display:none; background:var(--card); border:2px solid var(--yellow); border-radius:18px; padding:20px;
+    text-align:center; box-shadow:0 10px 26px rgba(3,19,79,.15);
+  }
+  .twist-revealed.show{display:block; animation:pop .4s ease both;}
+  .twist-revealed .em{font-size:40px;}
+  .twist-revealed .tt{font-weight:800; font-size:17px; margin:8px 0 4px;}
+  .twist-revealed .dd{font-size:13.5px; color:var(--muted); line-height:1.5;}
+  .replan{margin-top:14px; font-size:13px; font-weight:700; color:var(--purple); text-align:center;}
+
+  .confirm-overlay{
+    position:fixed; inset:0; background:rgba(3,19,79,.6); display:flex; align-items:center; justify-content:center;
+    z-index:60; opacity:0; pointer-events:none; transition:opacity .2s ease; padding:20px;
+  }
+  .confirm-overlay.open{opacity:1; pointer-events:auto;}
+  .confirm-box{background:var(--card); border-radius:18px; padding:22px; max-width:320px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,.4);}
+  .confirm-box p{font-size:14.5px; font-weight:700; margin:0 0 16px;}
+  .confirm-btns{display:flex; gap:10px;}
+  .confirm-btns button{
+    flex:1; border:none; border-radius:12px; padding:12px; font-weight:700; font-family:inherit; cursor:pointer; font-size:13.5px;
+  }
+  .btn-yes{background:var(--purple); color:#fff;}
+  .btn-no{background:var(--bg); color:var(--text); border:1px solid var(--line) !important;}
+
+  /* timer */
+  .timer-panel{display:flex; align-items:center; justify-content:space-between; gap:12px;}
+  .timer-display{font-size:28px; font-weight:800; font-variant-numeric:tabular-nums; color:var(--navy);}
+  @media (prefers-color-scheme: dark){ .timer-display{color:#fff;} }
+  .timer-btns{display:flex; gap:8px;}
+  .timer-btns button{
+    border:none; border-radius:12px; padding:10px 16px; font-weight:700; font-family:inherit; cursor:pointer; font-size:13px;
+    background:var(--blue); color:#fff;
+  }
+  .timer-btns button.reset{background:var(--bg); color:var(--text); border:1px solid var(--line);}
+
+  footer{text-align:center; font-size:12.5px; color:var(--muted); padding:10px 30px 0; line-height:1.6;}
+</style>
+</head>
+<body>
+
+<a class="backlink" href="../">← All games</a>
+
+<header>
+  <div class="wordmark">alx</div>
+  <div class="kicker">MISSION BOARD · WEEK 1</div>
+  <h1>Survive the Worst Week</h1>
+  <p class="sub">One character. Ten problems. Seven days.</p>
+</header>
+
+<main>
+
+  <section>
+    <div class="panel">
+      <div class="section-label">🎮 CHOOSE YOUR CHARACTER</div>
+      <div class="char-grid" id="charGrid"></div>
+    </div>
+  </section>
+
+  <div class="mission-area" id="missionArea">
+
+    <section>
+      <div class="panel">
+        <div class="section-label">🎯 MISSION BRIEFING</div>
+        <div id="briefing"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="panel">
+        <div class="section-label">🗓 THE WEEK</div>
+        <div class="deck-grid" id="sharedDeck"></div>
+        <div class="extras-label" id="extrasLabel"></div>
+        <div class="deck-grid" id="extraDeck"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="panel">
+        <div class="section-label">⭐ LEVEL 1 · SMART GOAL</div>
+        <div class="frame" id="smartFrame"></div>
+        <div class="smart-row" id="smartRow"></div>
+        <div class="smart-explain" id="smartExplain"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="panel">
+        <div class="section-label">🧭 LEVEL 2 · SORT THE WEEK</div>
+        <div class="matrix">
+          <div class="box do">Urgent + important<small>Do now</small></div>
+          <div class="box sch">Important, not urgent<small>Schedule it</small></div>
+          <div class="box shr">Urgent, not important<small>Shrink it or get help</small></div>
+          <div class="box drp">Neither<small>Drop it</small></div>
+        </div>
+        <p class="ask">Is this important, or does it just feel urgent?</p>
+        <p class="instr">Pick the top 3 and write which day you will do each one.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="panel">
+        <div class="section-label">🔒 LEVEL 3 · PLOT TWIST</div>
+        <div class="twist-card" id="twistCard">
+          <div class="lock">🔒</div>
+          <div class="lbl">Only open when your facilitator says so</div>
+          <div class="hint">Tap to reveal</div>
+        </div>
+        <div class="twist-revealed" id="twistRevealed"></div>
+        <p class="replan" id="replanText" style="display:none;">Replan: what moves, what gets dropped?</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="panel timer-panel">
+        <div class="timer-display" id="timerDisplay">17:00</div>
+        <div class="timer-btns">
+          <button id="timerToggle">Start</button>
+          <button class="reset" id="timerReset">Reset</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>Write each card code + one keyword on a sticky note,<br>then sort them on your paper.</footer>
+</main>
+
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <p>Only open this when your facilitator says so. Are you sure?</p>
+    <div class="confirm-btns">
+      <button class="btn-no" id="confirmNo">Not yet</button>
+      <button class="btn-yes" id="confirmYes">Yes, open it</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const sharedTasks = [
+  {code:'T1', em:'📝', tx:'Knowledge Check 2', day:'Due Sunday, 11:59 PM'},
+  {code:'T2', em:'📂', tx:'Mastery Project', day:'Due Monday'},
+  {code:'T3', em:'📚', tx:'Arabic exam', day:'Thursday morning'},
+  {code:'T4', em:'🏫', tx:'SPRIX live session', day:'Friday, 3 PM'},
+  {code:'T5', em:'👨‍🏫', tx:'Private lesson (dars)', day:'Saturday, 5 PM'},
+  {code:'T6', em:'💍', tx:"Cousin's engagement party", day:'Friday night'},
+  {code:'T7', em:'💬', tx:'40 unread WhatsApp messages', day:'Anytime'},
+  {code:'T8', em:'📱', tx:'TikTok / Instagram', day:'About 3 hours every day'},
+  {code:'T9', em:'🛒', tx:'Help mum with the shopping', day:'Wednesday afternoon'},
+  {code:'T10', em:'🎮', tx:'FIFA night with friends', day:'Tuesday night'}
+];
+
+const characters = [
+  {
+    id:'youssef', avatar:'🧠', name:'Youssef', team:1, goal:'Pass this course.',
+    extras:[
+      {code:'C1', em:'💻', tx:'Build his side app to "prove himself"', day:''},
+      {code:'C2', em:'❓', tx:'Ask the Module 3 question he keeps avoiding', day:''},
+      {code:'C3', em:'📊', tx:'Redo the Skills Tracker honestly', day:''}
+    ],
+    twist:{em:'🌐', tt:'Internet down', dd:'No internet at home on Wednesday and Thursday.'}
+  },
+  {
+    id:'mariam', avatar:'📓', name:'Mariam', team:2, goal:'Be as good as the others.',
+    extras:[
+      {code:'C1', em:'🤝', tx:'She promised to help 3 friends with their projects', day:''},
+      {code:'C2', em:'🔁', tx:'Redo Knowledge Check 1 "just to be sure"', day:''},
+      {code:'C3', em:'💭', tx:'Talk to someone about wanting to quit', day:''}
+    ],
+    twist:{em:'📅', tt:'Exam moved', dd:'The Arabic exam moved from Thursday to Tuesday.'}
+  },
+  {
+    id:'nour', avatar:'🏀', name:'Nour', team:3, goal:'Manage my time better.',
+    extras:[
+      {code:'C1', em:'➗', tx:'Maths exam moved to next Monday', day:''},
+      {code:'C2', em:'✍️', tx:'Start the morning pages habit', day:''},
+      {code:'C3', em:'📨', tx:'Follow up on her unanswered community question', day:''}
+    ],
+    twist:{em:'🤒', tt:'Sick day', dd:'Nour wakes up sick on Saturday. No energy all day.'}
+  },
+  {
+    id:'karim', avatar:'📣', name:'Karim', team:4, goal:'Finish fast.',
+    extras:[
+      {code:'C1', em:'⏱️', tx:'Submit the Mastery Project in 20 minutes', day:''},
+      {code:'C2', em:'📸', tx:'Post his daily motivation content', day:''},
+      {code:'C3', em:'📖', tx:'Read Module 5 (he has not opened it)', day:''}
+    ],
+    twist:{em:'📵', tt:'Phone broke', dd:"Karim's phone breaks. No WhatsApp, no TikTok, and no mobile Savanna."}
+  }
+];
+
+const smartLetters = [
+  {l:'S', word:'Specific', explain:'Exactly what will they do?'},
+  {l:'M', word:'Measurable', explain:'How will we know it is done?'},
+  {l:'A', word:'Achievable', explain:'Is it possible this week?'},
+  {l:'R', word:'Relevant', explain:'Does it actually matter to them?'},
+  {l:'T', word:'Time-bound', explain:'By when?'}
+];
+
+const charGrid = document.getElementById('charGrid');
+const missionArea = document.getElementById('missionArea');
+let current = null;
+
+function renderCharGrid(){
+  charGrid.innerHTML = '';
+  characters.forEach((c, i) => {
+    const el = document.createElement('div');
+    el.className = 'char-card' + (current && current.id===c.id ? ' active' : '');
+    el.style.animationDelay = (i*0.06)+'s';
+    el.innerHTML = `<div class="av">${c.avatar}</div><div class="nm">${c.name}</div><div class="tm">TEAM ${c.team}</div>`;
+    el.onclick = () => selectCharacter(c);
+    charGrid.appendChild(el);
+  });
+}
+
+function selectCharacter(c){
+  current = c;
+  renderCharGrid();
+  renderMission();
+  missionArea.classList.add('show');
+}
+
+function renderMission(){
+  const c = current;
+
+  document.getElementById('briefing').innerHTML = `
+    <div class="chiprow" style="display:flex; gap:10px; align-items:center; margin-bottom:6px;">
+      <div style="font-size:34px;">${c.avatar}</div>
+      <div style="font-weight:800; font-size:17px;">${c.name}</div>
+    </div>
+    <div class="bubble">💬 "${c.goal}"</div>
+    <p class="mission-line">Turn this vague goal into a SMART goal, sort the week into the 4 boxes, and survive the surprise.</p>
+  `;
+
+  document.getElementById('sharedDeck').innerHTML = sharedTasks.map(t => `
+    <div class="task-card">
+      <div class="code">${t.code}</div>
+      <div class="em">${t.em}</div>
+      <div class="tx">${t.tx}</div>
+      <div class="day">${t.day}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('extrasLabel').textContent = `Only ${c.name} has these`;
+  document.getElementById('extraDeck').innerHTML = c.extras.map(t => `
+    <div class="task-card extra">
+      <div class="code">${t.code}</div>
+      <div class="em">${t.em}</div>
+      <div class="tx">${t.tx}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('smartFrame').innerHTML =
+    `<b>${c.name}</b> will ______ by ______, and we will know it is done when ______.`;
+
+  const smartRow = document.getElementById('smartRow');
+  const smartExplain = document.getElementById('smartExplain');
+  smartRow.innerHTML = '';
+  smartExplain.classList.remove('show');
+  smartLetters.forEach(s => {
+    const btn = document.createElement('div');
+    btn.className = 'smart-tag';
+    btn.textContent = s.l;
+    btn.onclick = () => {
+      const wasActive = btn.classList.contains('active');
+      smartRow.querySelectorAll('.smart-tag').forEach(b => b.classList.remove('active'));
+      if(wasActive){
+        smartExplain.classList.remove('show');
+      } else {
+        btn.classList.add('active');
+        smartExplain.innerHTML = `<b>${s.word}</b> — ${s.explain}`;
+        smartExplain.classList.add('show');
+      }
+    };
+    smartRow.appendChild(btn);
+  });
+
+  const twistCard = document.getElementById('twistCard');
+  const twistRevealed = document.getElementById('twistRevealed');
+  const replanText = document.getElementById('replanText');
+  twistCard.style.display = '';
+  twistRevealed.classList.remove('show');
+  replanText.style.display = 'none';
+  twistCard.onclick = () => openConfirm(() => {
+    twistCard.style.display = 'none';
+    twistRevealed.innerHTML = `
+      <div class="em">${c.twist.em}</div>
+      <div class="tt">${c.twist.tt}</div>
+      <div class="dd">${c.twist.dd}</div>
+    `;
+    twistRevealed.classList.add('show');
+    replanText.style.display = 'block';
+  });
+}
+
+const confirmOverlay = document.getElementById('confirmOverlay');
+let confirmCallback = null;
+function openConfirm(cb){
+  confirmCallback = cb;
+  confirmOverlay.classList.add('open');
+}
+document.getElementById('confirmYes').onclick = () => {
+  confirmOverlay.classList.remove('open');
+  if(confirmCallback) confirmCallback();
+};
+document.getElementById('confirmNo').onclick = () => {
+  confirmOverlay.classList.remove('open');
+};
+
+/* timer */
+let timeLeft = 17*60;
+let timerInterval = null;
+const timerDisplay = document.getElementById('timerDisplay');
+const timerToggle = document.getElementById('timerToggle');
+function renderTimer(){
+  const m = Math.floor(timeLeft/60), s = timeLeft%60;
+  timerDisplay.textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+timerToggle.onclick = () => {
+  if(timerInterval){
+    clearInterval(timerInterval); timerInterval = null; timerToggle.textContent = 'Start';
+  } else {
+    timerToggle.textContent = 'Pause';
+    timerInterval = setInterval(() => {
+      if(timeLeft > 0){ timeLeft--; renderTimer(); }
+      else { clearInterval(timerInterval); timerInterval = null; timerToggle.textContent = 'Start'; }
+    }, 1000);
+  }
+};
+document.getElementById('timerReset').onclick = () => {
+  clearInterval(timerInterval); timerInterval = null; timeLeft = 17*60; timerToggle.textContent = 'Start'; renderTimer();
+};
+
+renderCharGrid();
+renderTimer();
+</script>
+</body>
+</html>

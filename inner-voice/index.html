@@ -57,16 +57,6 @@
   .case-text{font-size:14.5px; line-height:1.6; color:var(--text);}
   .case-text b{color:var(--blue);}
 
-  /* Team selector */
-  .team-row{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
-  .team-btn{
-    border:2px solid var(--line); background:transparent; color:var(--text); border-radius:14px;
-    padding:10px 4px; font-family:inherit; font-weight:700; font-size:13px; cursor:pointer;
-    transition:transform .12s ease, background .15s ease, border-color .15s ease, color .15s ease;
-  }
-  .team-btn:active{transform:scale(.93);}
-  .team-btn.active{background:var(--blue); border-color:var(--blue); color:#fff;}
-
   /* Case file cards */
   .files-grid{display:flex; flex-direction:column; gap:14px;}
   .file-card{
@@ -76,7 +66,6 @@
     position:relative; animation:pop .45s ease both;
   }
   .file-card:active{transform:scale(.97);}
-  .file-card.your-case{border-color:var(--yellow); box-shadow:0 0 0 3px rgba(245,183,0,.25), 0 8px 20px rgba(3,19,79,.10);}
   .avatar{
     font-size:34px; width:58px; height:58px; flex:none; display:flex; align-items:center; justify-content:center;
     background:var(--bg); border-radius:16px;
@@ -176,16 +165,9 @@
 
   <section>
     <div class="panel">
-      <div class="section-label">CHOOSE YOUR TEAM</div>
-      <div class="team-row" id="teamRow"></div>
-    </div>
-  </section>
-
-  <section>
-    <div class="panel">
       <div class="section-label">🗂 THE CASE</div>
-      <p class="case-text">It is <b>Week 1</b> of the SPRIX internship. By Sunday night, every learner had to finish onboarding, rate themselves on the <b>Skills Tracker</b>, and pass <b>Knowledge Check 1</b> (pass mark 70%, unlimited retakes).</p>
-      <p class="case-text">Four learners from the same cohort had a very different week. Open each case file to investigate.</p>
+      <p class="case-text">It is <b>Week 1</b> of the SPRIX training program. By Sunday night, every learner had to finish onboarding, rate themselves on the <b>Skills Tracker</b>, and pass <b>Knowledge Check 1</b> (pass mark 70%, unlimited retakes).</p>
+      <p class="case-text">Four learners from the same cohort had a very different week. Your team investigates all four case files and decides together who is who.</p>
     </div>
   </section>
 
@@ -200,8 +182,8 @@
       <ol class="mission-list">
         <li>For all 4 characters: what do they <b>SAY</b>? What do they <b>DO</b>? Do the two match?</li>
         <li>Which label fits each one? Find 2 pieces of evidence for each.</li>
-        <li>For your team's character: if nothing changes, where are they in Week 4?</li>
-        <li>Write one piece of advice for your character in one sentence.</li>
+        <li>For each character: if nothing changes, where are they in Week 4?</li>
+        <li>Write one piece of advice for each character in one sentence.</li>
       </ol>
       <div class="labels-grid">
         <div class="label-chip"><span>🔒</span>Fixed mindset</div>
@@ -278,36 +260,22 @@ const characters = [
 const marked = {}; // { charId: Set(clueIndex) }
 characters.forEach(c => marked[c.id] = new Set());
 
-const teamRow = document.getElementById('teamRow');
 const filesGrid = document.getElementById('filesGrid');
-let selectedTeam = null;
-
-function renderTeams(){
-  teamRow.innerHTML = '';
-  for(let t=1; t<=4; t++){
-    const btn = document.createElement('button');
-    btn.className = 'team-btn' + (selectedTeam===t ? ' active' : '');
-    btn.textContent = 'Team ' + t;
-    btn.onclick = () => { selectedTeam = (selectedTeam===t) ? null : t; renderTeams(); renderFiles(); };
-    teamRow.appendChild(btn);
-  }
-}
 
 function renderFiles(){
   filesGrid.innerHTML = '';
   characters.forEach((c, i) => {
     const card = document.createElement('div');
-    card.className = 'file-card' + (selectedTeam===c.team ? ' your-case' : '');
+    card.className = 'file-card';
     card.style.animationDelay = (i*0.06)+'s';
     card.onclick = () => openDossier(c);
     card.innerHTML = `
-      ${selectedTeam===c.team ? '<div class="badge-yourcase">YOUR CASE</div>' : ''}
       <div class="avatar">${c.avatar}</div>
       <div class="file-meta">
         <p class="name">${c.name}</p>
         <p class="nick">${c.nickname}</p>
         <div class="chiprow">
-          <span class="chip team">TEAM ${c.team}</span>
+          <span class="chip team">CASE ${i+1}</span>
           <span class="chip">CASE FILE</span>
         </div>
       </div>
@@ -332,13 +300,14 @@ function closeDossier(){
 overlay.addEventListener('click', (e) => { if(e.target === overlay) closeDossier(); });
 
 function renderDossier(c){
+  const caseNum = characters.findIndex(x => x.id === c.id) + 1;
   dossierEl.innerHTML = `
     <div class="dossier-handle"></div>
     <div class="clip">📎</div>
     <div class="stamp">CONFIDENTIAL</div>
     <button class="close-btn" onclick="closeDossier()">✕</button>
     <div class="chiprow">
-      <span class="chip team">TEAM ${c.team}</span>
+      <span class="chip team">CASE ${caseNum}</span>
       <span class="chip">CASE FILE</span>
     </div>
     <h2>${c.avatar} ${c.name}</h2>
@@ -352,7 +321,7 @@ function renderDossier(c){
     <div id="clueList"></div>
 
     <h3>What a friend says</h3>
-    <div class="bubble">💬 ${c.friendQuote}<br><span style="opacity:.6; font-style:normal; font-size:12px;">— ${c.friendName}</span></div>
+    <div class="bubble">💬 ${c.friendQuote}<br><span style="opacity:.6; font-style:normal; font-size:12px;">${c.friendName}</span></div>
   `;
   const clueList = dossierEl.querySelector('#clueList');
   c.clues.forEach((text, idx) => {
@@ -367,7 +336,6 @@ function renderDossier(c){
   });
 }
 
-renderTeams();
 renderFiles();
 </script>
 </body>

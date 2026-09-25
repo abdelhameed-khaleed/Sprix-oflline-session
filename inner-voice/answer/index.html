@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Facilitator Answer Key · Inner Voice Case</title>
+<title>The Reveal · Inner Voice Case</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -14,22 +14,41 @@
   @media (prefers-color-scheme: dark){
     :root{ --bg:#0a0f2b; --card:#121838; --text:#eef1ff; --muted:#a7adc9; --line:rgba(255,255,255,.10); }
   }
-  *{box-sizing:border-box;}
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   body{margin:0; font-family:'Poppins',Arial,sans-serif; background:var(--bg); color:var(--text);}
   a{color:inherit;}
   .backlink{display:inline-block; padding:14px 18px 0; font-size:13px; color:#cfd6ff; text-decoration:none; opacity:.8;}
-  header{background:linear-gradient(135deg,#7a1f1f,var(--navy)); color:#fff; padding:10px 20px 34px; text-align:center;}
+  header{background:linear-gradient(135deg,var(--purple),var(--navy)); color:#fff; padding:10px 20px 34px; text-align:center;}
   .kicker{display:inline-block; margin-top:14px; background:var(--yellow); color:var(--navy); font-weight:800; font-size:11px; letter-spacing:1px; padding:5px 12px; border-radius:999px;}
-  h1{font-size:22px; margin:14px 0 4px; font-weight:800;}
-  header p{margin:0; opacity:.85; font-size:13.5px; max-width:340px; margin:0 auto;}
+  h1{font-size:24px; margin:14px 0 4px; font-weight:800;}
+  header p{margin:0 auto; opacity:.85; font-size:13.5px; max-width:340px; line-height:1.5;}
+
   main{max-width:520px; margin:-18px auto 0; padding:0 16px 60px;}
-  .card{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; margin-bottom:14px; box-shadow:0 10px 26px rgba(3,19,79,.12);}
-  .card .top{display:flex; align-items:center; gap:12px;}
-  .avatar{font-size:30px; width:50px; height:50px; display:flex; align-items:center; justify-content:center; background:var(--bg); border-radius:14px;}
+
+  .reveal-all{
+    display:block; width:100%; border:none; border-radius:14px; padding:14px; margin-bottom:16px;
+    background:var(--yellow); color:var(--navy); font-family:inherit; font-weight:800; font-size:14px; cursor:pointer;
+    box-shadow:0 10px 22px rgba(245,183,0,.3); transition:transform .15s ease;
+  }
+  .reveal-all:active{transform:scale(.97);}
+
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; margin-bottom:14px;
+    box-shadow:0 10px 26px rgba(3,19,79,.12); cursor:pointer; transition:transform .15s ease;
+  }
+  .card:active{transform:scale(.98);}
+  .top{display:flex; align-items:center; gap:12px;}
+  .avatar{font-size:30px; width:50px; height:50px; display:flex; align-items:center; justify-content:center; background:var(--bg); border-radius:14px; flex:none;}
   .name{font-weight:800; font-size:16px; margin:0;}
-  .team{font-size:12px; color:var(--muted); margin:0;}
+  .sub{font-size:12px; color:var(--muted); margin:0;}
+  .tap-hint{margin-left:auto; font-size:11px; font-weight:700; color:var(--purple); flex:none;}
+
+  .reveal-body{max-height:0; overflow:hidden; opacity:0; transition:max-height .4s ease, opacity .3s ease, margin-top .3s ease;}
+  .card.open .reveal-body{max-height:400px; opacity:1; margin-top:14px;}
+  .card.open .tap-hint{display:none;}
+
   .label{
-    margin-top:12px; display:inline-flex; align-items:center; gap:6px; font-weight:800; font-size:13px;
+    display:inline-flex; align-items:center; gap:6px; font-weight:800; font-size:13px;
     padding:6px 12px; border-radius:999px; color:#fff;
   }
   .label.fixed{background:#c0392b;}
@@ -37,6 +56,7 @@
   .label.growth{background:#1f9d55;}
   .label.fake{background:#d68910;}
   .why{font-size:13.5px; line-height:1.6; margin-top:10px; color:var(--text);}
+
   footer{text-align:center; font-size:12px; color:var(--muted); padding:10px 30px 0; line-height:1.6;}
 </style>
 </head>
@@ -45,50 +65,75 @@
 <a class="backlink" href="../">← Back to case file</a>
 
 <header>
-  <div class="kicker">🔒 FACILITATOR ONLY</div>
-  <h1>The Twist: Answer Key</h1>
-  <p>Reveal this only at the end of the session, after each team has debated their case.</p>
+  <div class="kicker">🎉 THE REVEAL</div>
+  <h1>Who Was Who</h1>
+  <p>Show this to the room once every team has shared their answer. Tap each card to reveal it.</p>
 </header>
 
 <main>
+  <button class="reveal-all" id="revealAll">Reveal all four</button>
 
-  <div class="card">
+  <div class="card" data-label="fixed">
     <div class="top">
       <div class="avatar">🧠</div>
-      <div><p class="name">Youssef</p><p class="team">Team 1 · "The Smart One"</p></div>
+      <div><p class="name">Youssef</p><p class="sub">Case 1 &middot; "The Smart One"</p></div>
+      <div class="tap-hint">TAP</div>
     </div>
-    <span class="label fixed">🔒 Fixed mindset</span>
-    <p class="why">Believes ability is a fixed trait he already has ("the smart one"). Avoids anything that could disprove that: he doesn't retake the test, dismisses the course, deletes his own question so he doesn't look unsure, and calls a low score "easy" to protect his image instead of engaging with the challenge.</p>
+    <div class="reveal-body">
+      <span class="label fixed">🔒 Fixed mindset</span>
+      <p class="why">Youssef believes ability is a trait he already has, since everyone calls him "the smart one." He avoids anything that could disprove that: he does not retake the test, he dismisses the course, he deletes his own question so he does not look unsure, and he calls a low score "easy" to protect his image instead of engaging with the challenge.</p>
+    </div>
   </div>
 
-  <div class="card">
+  <div class="card" data-label="imposter">
     <div class="top">
       <div class="avatar">📓</div>
-      <div><p class="name">Mariam</p><p class="team">Team 2 · "The Quiet Worker"</p></div>
+      <div><p class="name">Mariam</p><p class="sub">Case 2 &middot; "The Quiet Worker"</p></div>
+      <div class="tap-hint">TAP</div>
     </div>
-    <span class="label imposter">🎭 Imposter syndrome</span>
-    <p class="why">Her results are genuinely strong — early finish, big improvement, helping classmates — but she can't accept the evidence. She explains success away ("only because I retook it"), rates herself far below reality, and privately considers quitting despite outperforming.</p>
+    <div class="reveal-body">
+      <span class="label imposter">🎭 Imposter syndrome</span>
+      <p class="why">Mariam's results are genuinely strong: an early finish, a big improvement, and she helped classmates. But she cannot accept the evidence. She explains her success away ("only because I retook it"), rates herself far below reality, and privately considers quitting despite outperforming.</p>
+    </div>
   </div>
 
-  <div class="card">
+  <div class="card" data-label="growth">
     <div class="top">
       <div class="avatar">🏀</div>
-      <div><p class="name">Nour</p><p class="team">Team 3 · "The Planner in Progress"</p></div>
+      <div><p class="name">Nour</p><p class="sub">Case 3 &middot; "The Planner in Progress"</p></div>
+      <div class="tap-hint">TAP</div>
     </div>
-    <span class="label growth">🌱 Growth mindset</span>
-    <p class="why">Gets frustrated first (that's normal), then does the real work: diagnoses exactly where she went wrong, asks a specific question, retakes and improves, and rates herself honestly with a plan to reassess later. Struggle doesn't stop her — it becomes information.</p>
+    <div class="reveal-body">
+      <span class="label growth">🌱 Growth mindset</span>
+      <p class="why">Nour gets frustrated first, which is normal, then does the real work: she diagnoses exactly where she went wrong, asks a specific question, retakes the test and improves, and rates herself honestly with a plan to reassess later. Struggle does not stop her, it becomes information.</p>
+    </div>
   </div>
 
-  <div class="card">
+  <div class="card" data-label="fake">
     <div class="top">
       <div class="avatar">📣</div>
-      <div><p class="name">Karim</p><p class="team">Team 4 · "The Hype Man"</p></div>
+      <div><p class="name">Karim</p><p class="sub">Case 4 &middot; "The Hype Man"</p></div>
+      <div class="tap-hint">TAP</div>
     </div>
-    <span class="label fake">📣 Fake growth</span>
-    <p class="why">Says all the right growth-mindset lines out loud, but his actions don't match: he brute-forces the test instead of learning, doesn't care about understanding a wrong answer once he's passed, rates himself "to be safe" instead of honestly, and plans to rush his project. Growth mindset language without growth mindset behaviour.</p>
+    <div class="reveal-body">
+      <span class="label fake">📣 Fake growth</span>
+      <p class="why">Karim says all the right growth mindset lines out loud, but his actions do not match. He brute forces the test instead of learning from it, does not care about understanding a wrong answer once he has passed, rates himself "to be safe" instead of honestly, and plans to rush his project. It is growth mindset language without growth mindset behaviour.</p>
+    </div>
   </div>
 
-  <footer>Ask teams: what did you say vs. what did the evidence show?<br>That gap is the real lesson.</footer>
+  <footer>Ask the room: what did each person say, and what did the evidence show?<br>That gap is the real lesson.</footer>
 </main>
+
+<script>
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => card.classList.toggle('open'));
+  });
+  document.getElementById('revealAll').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const allOpen = [...document.querySelectorAll('.card')].every(c => c.classList.contains('open'));
+    document.querySelectorAll('.card').forEach(c => c.classList.toggle('open', !allOpen));
+    e.target.textContent = allOpen ? 'Reveal all four' : 'Hide all four';
+  });
+</script>
 </body>
 </html>

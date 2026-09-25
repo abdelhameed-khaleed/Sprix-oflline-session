@@ -38,7 +38,13 @@
   }
   .card:active{transform:scale(.98);}
   .top{display:flex; align-items:center; gap:12px;}
-  .avatar{font-size:30px; width:50px; height:50px; display:flex; align-items:center; justify-content:center; background:var(--bg); border-radius:14px; flex:none;}
+  .avatar{width:50px; height:50px; position:relative; background:var(--bg); border-radius:14px; flex:none; overflow:hidden;}
+  .avatar svg{width:100%; height:100%; display:block;}
+  .avatar .badge{
+    position:absolute; bottom:-3px; right:-3px; width:20px; height:20px; border-radius:50%;
+    background:var(--card); border:2px solid var(--bg); display:flex; align-items:center; justify-content:center;
+    font-size:11px; box-shadow:0 2px 5px rgba(0,0,0,.3);
+  }
   .name{font-weight:800; font-size:16px; margin:0;}
   .sub{font-size:12px; color:var(--muted); margin:0;}
   .tap-hint{margin-left:auto; font-size:11px; font-weight:700; color:var(--purple); flex:none;}
@@ -75,7 +81,7 @@
 
   <div class="card" data-label="fixed">
     <div class="top">
-      <div class="avatar">🧠</div>
+      <div class="avatar" data-persona="youssef"></div>
       <div><p class="name">Youssef</p><p class="sub">Case 1 &middot; "The Smart One"</p></div>
       <div class="tap-hint">TAP</div>
     </div>
@@ -87,7 +93,7 @@
 
   <div class="card" data-label="imposter">
     <div class="top">
-      <div class="avatar">📓</div>
+      <div class="avatar" data-persona="mariam"></div>
       <div><p class="name">Mariam</p><p class="sub">Case 2 &middot; "The Quiet Worker"</p></div>
       <div class="tap-hint">TAP</div>
     </div>
@@ -99,7 +105,7 @@
 
   <div class="card" data-label="growth">
     <div class="top">
-      <div class="avatar">🏀</div>
+      <div class="avatar" data-persona="nour"></div>
       <div><p class="name">Nour</p><p class="sub">Case 3 &middot; "The Planner in Progress"</p></div>
       <div class="tap-hint">TAP</div>
     </div>
@@ -111,7 +117,7 @@
 
   <div class="card" data-label="fake">
     <div class="top">
-      <div class="avatar">📣</div>
+      <div class="avatar" data-persona="karim"></div>
       <div><p class="name">Karim</p><p class="sub">Case 4 &middot; "The Hype Man"</p></div>
       <div class="tap-hint">TAP</div>
     </div>
@@ -125,6 +131,28 @@
 </main>
 
 <script>
+  const personas = {
+    youssef:{bg:'#0452F0', clothing:'#023a9e', skin:'#C68642', hair:'#241a12', emoji:'🧠'},
+    mariam:{bg:'#5F3DC4', clothing:'#46299c', skin:'#F0B27A', hair:'#2b1d12', emoji:'📓'},
+    nour:{bg:'#F08C00', clothing:'#c96f00', skin:'#8D5524', hair:'#1a130d', emoji:'🏀'},
+    karim:{bg:'#E64980', clothing:'#c93368', skin:'#FFDAB3', hair:'#1a130d', emoji:'📣'}
+  };
+  function personaSVG(p){
+    return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="50" fill="${p.bg}"/>
+      <path d="M14 100 C14 76 29 64 50 64 C71 64 86 76 86 100 Z" fill="${p.clothing}"/>
+      <circle cx="50" cy="41" r="21" fill="${p.skin}"/>
+      <path d="M27 39 C27 19 35 11 50 11 C65 11 73 19 73 39 C73 28 63 23 50 23 C37 23 27 28 27 39 Z" fill="${p.hair}"/>
+      <circle cx="42" cy="42" r="2.4" fill="#20182e"/>
+      <circle cx="58" cy="42" r="2.4" fill="#20182e"/>
+      <path d="M42 50 Q50 56 58 50" stroke="#20182e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    </svg>`;
+  }
+  document.querySelectorAll('.avatar[data-persona]').forEach(el => {
+    const p = personas[el.dataset.persona];
+    el.innerHTML = personaSVG(p) + `<span class="badge">${p.emoji}</span>`;
+  });
+
   document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('click', () => card.classList.toggle('open'));
   });

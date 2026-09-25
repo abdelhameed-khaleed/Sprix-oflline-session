@@ -44,9 +44,22 @@
   }
   .char-card:active{transform:scale(.95);}
   .char-card.active{border-color:var(--yellow); box-shadow:0 0 0 3px rgba(245,183,0,.25), 0 8px 20px rgba(3,19,79,.10);}
-  .char-card .av{font-size:36px; margin-bottom:6px;}
+  .char-card .av{width:56px; height:56px; margin:0 auto 8px; position:relative;}
+  .char-card .av svg{width:100%; height:100%; display:block; border-radius:50%;}
+  .char-card .av .badge{
+    position:absolute; bottom:-3px; right:-3px; width:20px; height:20px; border-radius:50%;
+    background:var(--card); border:2px solid var(--bg); display:flex; align-items:center; justify-content:center;
+    font-size:11px; box-shadow:0 2px 5px rgba(0,0,0,.3);
+  }
   .char-card .nm{font-weight:800; font-size:15px;}
   .char-card .tm{font-size:11px; color:var(--muted); font-weight:700; margin-top:2px;}
+  .persona-inline{width:44px; height:44px; position:relative; flex:none;}
+  .persona-inline svg{width:100%; height:100%; display:block; border-radius:50%;}
+  .persona-inline .badge{
+    position:absolute; bottom:-3px; right:-3px; width:18px; height:18px; border-radius:50%;
+    background:var(--card); border:2px solid var(--bg); display:flex; align-items:center; justify-content:center;
+    font-size:10px; box-shadow:0 2px 5px rgba(0,0,0,.3);
+  }
   @keyframes pop{ from{opacity:0; transform:translateY(10px) scale(.98);} to{opacity:1; transform:none;} }
 
   .mission-area{display:none;}
@@ -272,6 +285,7 @@ const sharedTasks = [
 const characters = [
   {
     id:'youssef', avatar:'🧠', name:'Youssef', team:1, goal:'Pass this course.',
+    persona:{bg:'#0452F0', clothing:'#023a9e', skin:'#C68642', hair:'#241a12'},
     extras:[
       {code:'C1', em:'💻', tx:'Build his side app to "prove himself"', day:''},
       {code:'C2', em:'❓', tx:'Ask the Module 3 question he keeps avoiding', day:''},
@@ -281,6 +295,7 @@ const characters = [
   },
   {
     id:'mariam', avatar:'📓', name:'Mariam', team:2, goal:'Get better at coding.',
+    persona:{bg:'#5F3DC4', clothing:'#46299c', skin:'#F0B27A', hair:'#2b1d12'},
     extras:[
       {code:'C1', em:'🤝', tx:'She promised to help 3 friends with their projects', day:''},
       {code:'C2', em:'🔁', tx:'Redo Knowledge Check 1 "just to be sure"', day:''},
@@ -290,6 +305,7 @@ const characters = [
   },
   {
     id:'nour', avatar:'🏀', name:'Nour', team:3, goal:'Manage my time better.',
+    persona:{bg:'#F08C00', clothing:'#c96f00', skin:'#8D5524', hair:'#1a130d'},
     extras:[
       {code:'C1', em:'➗', tx:'Maths exam moved to next Monday', day:''},
       {code:'C2', em:'✍️', tx:'Start the morning pages habit', day:''},
@@ -299,6 +315,7 @@ const characters = [
   },
   {
     id:'karim', avatar:'📣', name:'Karim', team:4, goal:'Finish fast.',
+    persona:{bg:'#E64980', clothing:'#c93368', skin:'#FFDAB3', hair:'#1a130d'},
     extras:[
       {code:'C1', em:'⏱️', tx:'Submit the Mastery Project in 20 minutes', day:''},
       {code:'C2', em:'📸', tx:'Post his daily motivation content', day:''},
@@ -316,6 +333,21 @@ const smartLetters = [
   {l:'T', word:'Time-bound', explain:'By when?'}
 ];
 
+function personaSVG(p){
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="50" fill="${p.bg}"/>
+    <path d="M14 100 C14 76 29 64 50 64 C71 64 86 76 86 100 Z" fill="${p.clothing}"/>
+    <circle cx="50" cy="41" r="21" fill="${p.skin}"/>
+    <path d="M27 39 C27 19 35 11 50 11 C65 11 73 19 73 39 C73 28 63 23 50 23 C37 23 27 28 27 39 Z" fill="${p.hair}"/>
+    <circle cx="42" cy="42" r="2.4" fill="#20182e"/>
+    <circle cx="58" cy="42" r="2.4" fill="#20182e"/>
+    <path d="M42 50 Q50 56 58 50" stroke="#20182e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+function avatarHTML(c){
+  return `${personaSVG(c.persona)}<span class="badge">${c.avatar}</span>`;
+}
+
 const charGrid = document.getElementById('charGrid');
 const missionArea = document.getElementById('missionArea');
 let current = null;
@@ -326,7 +358,7 @@ function renderCharGrid(){
     const el = document.createElement('div');
     el.className = 'char-card' + (current && current.id===c.id ? ' active' : '');
     el.style.animationDelay = (i*0.06)+'s';
-    el.innerHTML = `<div class="av">${c.avatar}</div><div class="nm">${c.name}</div><div class="tm">TEAM ${c.team}</div>`;
+    el.innerHTML = `<div class="av">${avatarHTML(c)}</div><div class="nm">${c.name}</div><div class="tm">TEAM ${c.team}</div>`;
     el.onclick = () => selectCharacter(c);
     charGrid.appendChild(el);
   });
@@ -344,7 +376,7 @@ function renderMission(){
 
   document.getElementById('briefing').innerHTML = `
     <div class="chiprow" style="display:flex; gap:10px; align-items:center; margin-bottom:6px;">
-      <div style="font-size:34px;">${c.avatar}</div>
+      <div class="persona-inline">${avatarHTML(c)}</div>
       <div style="font-weight:800; font-size:17px;">${c.name}</div>
     </div>
     <div class="bubble">💬 "${c.goal}"</div>

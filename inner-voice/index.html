@@ -67,8 +67,13 @@
   }
   .file-card:active{transform:scale(.97);}
   .avatar{
-    font-size:34px; width:58px; height:58px; flex:none; display:flex; align-items:center; justify-content:center;
-    background:var(--bg); border-radius:16px;
+    width:58px; height:58px; flex:none; position:relative; border-radius:16px; overflow:hidden; background:var(--bg);
+  }
+  .avatar svg{width:100%; height:100%; display:block;}
+  .avatar .badge{
+    position:absolute; bottom:-3px; right:-3px; width:22px; height:22px; border-radius:50%;
+    background:var(--card); border:2px solid var(--bg); display:flex; align-items:center; justify-content:center;
+    font-size:12px; box-shadow:0 2px 5px rgba(0,0,0,.3);
   }
   .file-meta{flex:1; min-width:0;}
   .file-meta .name{font-weight:700; font-size:16px; margin:0 0 2px;}
@@ -124,8 +129,9 @@
     box-shadow:0 3px 8px rgba(0,0,0,.25); border:1px dashed rgba(255,255,255,.6);
   }
   .clip{position:absolute; top:-16px; left:24px; font-size:30px; transform:rotate(-8deg);}
-  .dossier h2{font-size:20px; margin:20px 0 0; font-weight:800;}
-  .dossier .nick2{color:var(--muted); font-size:13px; margin:2px 0 16px;}
+  .dossier-head{display:flex; align-items:center; gap:12px; margin:20px 0 16px;}
+  .dossier h2{font-size:20px; margin:0; font-weight:800;}
+  .dossier .nick2{color:var(--muted); font-size:13px; margin:2px 0 0;}
   .dossier h3{
     font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--purple); font-weight:800;
     margin:20px 0 8px;
@@ -205,6 +211,7 @@
 const characters = [
   {
     id:'youssef', team:1, avatar:'🧠', name:'Youssef', nickname:'"The Smart One"',
+    persona:{bg:'#0452F0', clothing:'#023a9e', skin:'#C68642', hair:'#241a12'},
     who:'16. Top programmer in his school class, won last year\'s school coding competition. Everyone at home and school calls him "the smart one".',
     clues:[
       'Rated himself 5/5 on all 8 meta-skills in the Skills Tracker in two minutes, without reading the instructions.',
@@ -218,6 +225,7 @@ const characters = [
   },
   {
     id:'mariam', team:2, avatar:'📓', name:'Mariam', nickname:'"The Quiet Worker"',
+    persona:{bg:'#5F3DC4', clothing:'#46299c', skin:'#F0B27A', hair:'#2b1d12'},
     who:'16. Joined SPRIX because her older brother is a software developer. Takes careful notes on everything.',
     clues:[
       'Finished all Week 1 content by Wednesday, four days early.',
@@ -231,6 +239,7 @@ const characters = [
   },
   {
     id:'nour', team:3, avatar:'🏀', name:'Nour', nickname:'"The Planner in Progress"',
+    persona:{bg:'#F08C00', clothing:'#c96f00', skin:'#8D5524', hair:'#1a130d'},
     who:'16. Plays basketball three times a week. School exams are coming soon.',
     clues:[
       'Scored 55% on Knowledge Check 1. She was annoyed: "I studied for this!" She closed her laptop and went to training.',
@@ -244,6 +253,7 @@ const characters = [
   },
   {
     id:'karim', team:4, avatar:'📣', name:'Karim', nickname:'"The Hype Man"',
+    persona:{bg:'#E64980', clothing:'#c93368', skin:'#FFDAB3', hair:'#1a130d'},
     who:'16. Very active on social media. Posts a motivational quote every day.',
     clues:[
       'Posted in the group chat: "Growth mindset is everything! Failure is just learning!"',
@@ -256,6 +266,21 @@ const characters = [
     friendName:'Ziad (friend)', friendQuote:'"He\'s always hyped, but I\'ve never seen him actually open the notes."'
   }
 ];
+
+function personaSVG(p){
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="50" fill="${p.bg}"/>
+    <path d="M14 100 C14 76 29 64 50 64 C71 64 86 76 86 100 Z" fill="${p.clothing}"/>
+    <circle cx="50" cy="41" r="21" fill="${p.skin}"/>
+    <path d="M27 39 C27 19 35 11 50 11 C65 11 73 19 73 39 C73 28 63 23 50 23 C37 23 27 28 27 39 Z" fill="${p.hair}"/>
+    <circle cx="42" cy="42" r="2.4" fill="#20182e"/>
+    <circle cx="58" cy="42" r="2.4" fill="#20182e"/>
+    <path d="M42 50 Q50 56 58 50" stroke="#20182e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+function avatarHTML(c){
+  return `${personaSVG(c.persona)}<span class="badge">${c.avatar}</span>`;
+}
 
 const marked = {}; // { charId: Set(clueIndex) }
 characters.forEach(c => marked[c.id] = new Set());
@@ -270,7 +295,7 @@ function renderFiles(){
     card.style.animationDelay = (i*0.06)+'s';
     card.onclick = () => openDossier(c);
     card.innerHTML = `
-      <div class="avatar">${c.avatar}</div>
+      <div class="avatar">${avatarHTML(c)}</div>
       <div class="file-meta">
         <p class="name">${c.name}</p>
         <p class="nick">${c.nickname}</p>
@@ -310,8 +335,13 @@ function renderDossier(c){
       <span class="chip team">CASE ${caseNum}</span>
       <span class="chip">CASE FILE</span>
     </div>
-    <h2>${c.avatar} ${c.name}</h2>
-    <p class="nick2">${c.nickname}</p>
+    <div class="dossier-head">
+      <div class="avatar" style="width:46px; height:46px;">${avatarHTML(c)}</div>
+      <div>
+        <h2>${c.name}</h2>
+        <p class="nick2">${c.nickname}</p>
+      </div>
+    </div>
 
     <h3>Who they are</h3>
     <p class="who">${c.who}</p>

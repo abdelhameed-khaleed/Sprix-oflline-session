@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Sprix Offline Sessions · ALX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#03134F; --blue:#0452F0; --purple:#5F3DC4; --yellow:#F5B700;
+    --bg:#f4f6fb; --card:#ffffff; --text:#101423; --muted:#5a6072;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0a0f2b; --card:#121838; --text:#eef1ff; --muted:#a7adc9; }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Poppins',Arial,sans-serif; background:var(--bg); color:var(--text);
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+  }
+  header{
+    width:100%; background:linear-gradient(135deg,var(--navy),var(--purple));
+    color:#fff; padding:48px 20px 56px; text-align:center;
+  }
+  .wordmark{font-weight:800; letter-spacing:2px; opacity:.85; font-size:14px; text-transform:lowercase;}
+  h1{font-size:28px; margin:10px 0 6px; font-weight:800;}
+  header p{margin:0; opacity:.85; font-size:15px;}
+  main{width:100%; max-width:480px; padding:24px 18px 60px; margin-top:-30px;}
+  .game-card{
+    background:var(--card); border-radius:20px; padding:22px; margin-bottom:18px;
+    box-shadow:0 12px 30px rgba(3,19,79,.15); text-decoration:none; color:var(--text);
+    display:block; transition:transform .18s ease, box-shadow .18s ease; border:1px solid rgba(0,0,0,.04);
+  }
+  .game-card:active{transform:scale(.97);}
+  .game-card .tag{
+    display:inline-block; background:var(--yellow); color:var(--navy); font-weight:700;
+    font-size:11px; padding:4px 10px; border-radius:999px; letter-spacing:.5px; margin-bottom:10px;
+  }
+  .game-card h2{margin:0 0 6px; font-size:19px; font-weight:700;}
+  .game-card p{margin:0; color:var(--muted); font-size:14px; line-height:1.5;}
+  .game-card .go{
+    margin-top:14px; font-weight:700; color:var(--blue); font-size:14px;
+  }
+  .soon{opacity:.55; pointer-events:none;}
+  .soon .tag{background:var(--muted); color:#fff;}
+</style>
+</head>
+<body>
+  <header>
+    <div class="wordmark">alx</div>
+    <h1>Sprix Offline Sessions</h1>
+    <p>Pick a game to start the session</p>
+  </header>
+  <main>
+    <a class="game-card" href="inner-voice/">
+      <span class="tag">GAME 1 · LIVE</span>
+      <h2>🧠 The Week 1 Files: Inner Voice Case</h2>
+      <p>Four teams investigate four fictional learners and decide what kind of inner voice (mindset) each one has.</p>
+      <div class="go">Open case file →</div>
+    </a>
+    <div class="game-card soon">
+      <span class="tag">GAME 2 · SOON</span>
+      <h2>Coming next</h2>
+      <p>Second offline session game will appear here.</p>
+    </div>
+  </main>
+</body>
+</html>

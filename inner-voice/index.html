@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>The Week 1 Files: Inner Voice Case · ALX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#03134F; --blue:#0452F0; --purple:#5F3DC4; --yellow:#F5B700;
+    --bg:#f4f6fb; --card:#ffffff; --text:#101423; --muted:#5a6072; --line:rgba(3,19,79,.10);
+    --paper:#fdf9ec;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0a0f2b; --card:#121838; --text:#eef1ff; --muted:#a7adc9; --line:rgba(255,255,255,.10);
+      --paper:#1c2140;
+    }
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:'Poppins',Arial,sans-serif; background:var(--bg); color:var(--text);
+    min-height:100vh; overflow-x:hidden;
+  }
+  a{color:inherit;}
+  .backlink{
+    display:inline-block; padding:14px 18px 0; font-size:13px; color:#cfd6ff; text-decoration:none; opacity:.8;
+  }
+  header{
+    background:radial-gradient(circle at 20% 0%, var(--purple), var(--navy) 65%);
+    color:#fff; padding:8px 20px 40px; text-align:center; position:relative; overflow:hidden;
+  }
+  header::after{
+    content:""; position:absolute; inset:auto -20% -60% -20%; height:140px;
+    background:var(--navy); border-radius:50%; opacity:.5;
+  }
+  .wordmark{font-weight:800; letter-spacing:2px; opacity:.85; font-size:13px; text-transform:lowercase; margin-top:10px;}
+  .kicker{
+    display:inline-block; margin-top:14px; background:var(--yellow); color:var(--navy); font-weight:800;
+    font-size:11px; letter-spacing:1px; padding:5px 12px; border-radius:999px;
+  }
+  h1{font-size:26px; margin:14px 0 6px; font-weight:800; line-height:1.25;}
+  header p.sub{margin:0 auto; max-width:340px; opacity:.85; font-size:14px; line-height:1.5;}
+
+  main{max-width:520px; margin:0 auto; padding:0 16px 70px; position:relative; z-index:1;}
+
+  section{margin-top:-22px; margin-bottom:26px;}
+  .panel{
+    background:var(--card); border-radius:20px; padding:20px; box-shadow:0 14px 34px rgba(3,19,79,.14);
+    border:1px solid var(--line);
+  }
+  .section-label{
+    font-size:11px; font-weight:800; letter-spacing:1.2px; color:var(--purple); margin-bottom:8px;
+  }
+  .case-text{font-size:14.5px; line-height:1.6; color:var(--text);}
+  .case-text b{color:var(--blue);}
+
+  /* Team selector */
+  .team-row{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
+  .team-btn{
+    border:2px solid var(--line); background:transparent; color:var(--text); border-radius:14px;
+    padding:10px 4px; font-family:inherit; font-weight:700; font-size:13px; cursor:pointer;
+    transition:transform .12s ease, background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .team-btn:active{transform:scale(.93);}
+  .team-btn.active{background:var(--blue); border-color:var(--blue); color:#fff;}
+
+  /* Case file cards */
+  .files-grid{display:flex; flex-direction:column; gap:14px;}
+  .file-card{
+    background:var(--card); border-radius:18px; padding:16px; box-shadow:0 8px 20px rgba(3,19,79,.10);
+    border:1px solid var(--line); display:flex; align-items:center; gap:14px; cursor:pointer;
+    transition:transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+    position:relative; animation:pop .45s ease both;
+  }
+  .file-card:active{transform:scale(.97);}
+  .file-card.your-case{border-color:var(--yellow); box-shadow:0 0 0 3px rgba(245,183,0,.25), 0 8px 20px rgba(3,19,79,.10);}
+  .avatar{
+    font-size:34px; width:58px; height:58px; flex:none; display:flex; align-items:center; justify-content:center;
+    background:var(--bg); border-radius:16px;
+  }
+  .file-meta{flex:1; min-width:0;}
+  .file-meta .name{font-weight:700; font-size:16px; margin:0 0 2px;}
+  .file-meta .nick{font-size:12.5px; color:var(--muted); margin:0 0 6px;}
+  .chiprow{display:flex; gap:6px; flex-wrap:wrap;}
+  .chip{
+    font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:999px; background:var(--bg); color:var(--muted);
+    letter-spacing:.3px;
+  }
+  .chip.team{background:var(--purple); color:#fff;}
+  .badge-yourcase{
+    position:absolute; top:-9px; right:10px; background:var(--yellow); color:var(--navy);
+    font-size:10px; font-weight:800; padding:4px 10px; border-radius:999px; letter-spacing:.5px;
+    box-shadow:0 4px 10px rgba(245,183,0,.4); animation:bounceIn .4s ease;
+  }
+  .open-arrow{font-size:20px; color:var(--blue); flex:none;}
+
+  @keyframes pop{ from{opacity:0; transform:translateY(10px) scale(.98);} to{opacity:1; transform:none;} }
+  @keyframes bounceIn{ 0%{transform:scale(.4); opacity:0;} 70%{transform:scale(1.15);} 100%{transform:scale(1); opacity:1;} }
+
+  /* Investigation board */
+  .mission-list{margin:0; padding-left:18px; font-size:14px; line-height:1.7;}
+  .labels-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px;}
+  .label-chip{
+    background:var(--bg); border:1px dashed var(--line); border-radius:14px; padding:12px 10px;
+    text-align:center; font-weight:700; font-size:13px;
+  }
+  .label-chip span{display:block; font-size:20px; margin-bottom:4px;}
+
+  footer{text-align:center; font-size:12.5px; color:var(--muted); padding:10px 30px 0; line-height:1.6;}
+
+  /* Modal / dossier */
+  .overlay{
+    position:fixed; inset:0; background:rgba(3,19,79,.55); backdrop-filter:blur(2px);
+    display:flex; align-items:flex-end; justify-content:center; z-index:50; opacity:0; pointer-events:none;
+    transition:opacity .25s ease;
+  }
+  .overlay.open{opacity:1; pointer-events:auto;}
+  .dossier{
+    width:100%; max-width:520px; max-height:88vh; overflow-y:auto; background:var(--paper);
+    border-radius:22px 22px 0 0; padding:22px 20px 34px; transform:translateY(100%);
+    transition:transform .32s cubic-bezier(.22,1,.36,1); position:relative; box-shadow:0 -10px 40px rgba(0,0,0,.3);
+  }
+  .overlay.open .dossier{transform:translateY(0);}
+  .dossier-handle{width:40px; height:4px; background:var(--line); border-radius:99px; margin:0 auto 14px;}
+  .close-btn{
+    position:absolute; top:16px; right:16px; width:32px; height:32px; border-radius:50%; border:none;
+    background:var(--line); color:var(--text); font-size:16px; font-weight:700; cursor:pointer; line-height:1;
+  }
+  .stamp{
+    position:absolute; top:14px; left:-6px; background:#c0392b; color:#fff; font-weight:800; font-size:11px;
+    letter-spacing:1.5px; padding:5px 14px; transform:rotate(-8deg); border-radius:3px;
+    box-shadow:0 3px 8px rgba(0,0,0,.25); border:1px dashed rgba(255,255,255,.6);
+  }
+  .clip{position:absolute; top:-16px; left:24px; font-size:30px; transform:rotate(-8deg);}
+  .dossier h2{font-size:20px; margin:20px 0 0; font-weight:800;}
+  .dossier .nick2{color:var(--muted); font-size:13px; margin:2px 0 16px;}
+  .dossier h3{
+    font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--purple); font-weight:800;
+    margin:20px 0 8px;
+  }
+  .dossier .who{font-size:14px; line-height:1.6;}
+  .clue{
+    display:flex; gap:10px; align-items:flex-start; background:rgba(0,0,0,.03); border:1px solid var(--line);
+    border-radius:12px; padding:10px 12px; margin-bottom:8px; cursor:pointer; transition:background .15s ease, border-color .15s ease;
+    font-size:13.5px; line-height:1.5;
+  }
+  .clue:active{transform:scale(.98);}
+  .clue.marked{background:rgba(245,183,0,.18); border-color:var(--yellow);}
+  .clue-num{
+    flex:none; width:22px; height:22px; border-radius:50%; background:var(--blue); color:#fff; font-size:11px;
+    font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px;
+  }
+  .clue.marked .clue-num{background:var(--yellow); color:var(--navy);}
+  .mark-hint{font-size:11px; color:var(--muted); margin:-2px 0 10px;}
+  .bubble{
+    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px;
+    font-size:13.5px; font-style:italic; position:relative; line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<a class="backlink" href="../">← All games</a>
+
+<header>
+  <div class="wordmark">alx</div>
+  <div class="kicker">MISSION FILE · WEEK 1</div>
+  <h1>The Week 1 Files:<br>Inner Voice Case</h1>
+  <p class="sub">Four learners. Same week. Same score. Four different inner voices.</p>
+</header>
+
+<main>
+
+  <section>
+    <div class="panel">
+      <div class="section-label">CHOOSE YOUR TEAM</div>
+      <div class="team-row" id="teamRow"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <div class="section-label">🗂 THE CASE</div>
+      <p class="case-text">It is <b>Week 1</b> of the SPRIX internship. By Sunday night, every learner had to finish onboarding, rate themselves on the <b>Skills Tracker</b>, and pass <b>Knowledge Check 1</b> (pass mark 70%, unlimited retakes).</p>
+      <p class="case-text">Four learners from the same cohort had a very different week. Open each case file to investigate.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label" style="padding-left:4px; margin-bottom:10px;">📁 CASE FILES</div>
+    <div class="files-grid" id="filesGrid"></div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <div class="section-label">🕵️ INVESTIGATION BOARD</div>
+      <ol class="mission-list">
+        <li>For all 4 characters: what do they <b>SAY</b>? What do they <b>DO</b>? Do the two match?</li>
+        <li>Which label fits each one? Find 2 pieces of evidence for each.</li>
+        <li>For your team's character: if nothing changes, where are they in Week 4?</li>
+        <li>Write one piece of advice for your character in one sentence.</li>
+      </ol>
+      <div class="labels-grid">
+        <div class="label-chip"><span>🔒</span>Fixed mindset</div>
+        <div class="label-chip"><span>🌱</span>Growth mindset</div>
+        <div class="label-chip"><span>🎭</span>Imposter syndrome</div>
+        <div class="label-chip"><span>📣</span>Fake growth</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Discuss with your team.<br>Your facilitator will reveal the twist at the end.</footer>
+</main>
+
+<div class="overlay" id="overlay">
+  <div class="dossier" id="dossier"></div>
+</div>
+
+<script>
+const characters = [
+  {
+    id:'youssef', team:1, avatar:'🧠', name:'Youssef', nickname:'"The Smart One"',
+    who:'16. Top programmer in his school class, won last year\'s school coding competition. Everyone at home and school calls him "the smart one".',
+    clues:[
+      'Rated himself 5/5 on all 8 meta-skills in the Skills Tracker in two minutes, without reading the instructions.',
+      'Scored 55% on Knowledge Check 1. Did not retake it. Said the questions were "badly written".',
+      'Posted in the group chat: "This course is soft-skills stuff, not real tech. I\'ll focus on real coding."',
+      'Has a question about Module 3. Typed it in the community channel, then deleted it: "If I ask, they\'ll think I\'m not good."',
+      'When his mum asked how the course is going, he said: "Easy."',
+      'Tonight he started building a side app "to prove I don\'t need this course".'
+    ],
+    friendName:'Omar (friend)', friendQuote:'"He\'s been really quiet in the group since Tuesday."'
+  },
+  {
+    id:'mariam', team:2, avatar:'📓', name:'Mariam', nickname:'"The Quiet Worker"',
+    who:'16. Joined SPRIX because her older brother is a software developer. Takes careful notes on everything.',
+    clues:[
+      'Finished all Week 1 content by Wednesday, four days early.',
+      'Scored 62% on her first Knowledge Check attempt, then 95% on the retake.',
+      'Helped two classmates understand SMART goals in the group chat. Both thanked her.',
+      'Rated herself 1/5 on every skill in the Skills Tracker.',
+      'Keeps thinking: "I only passed because I retook it. The others got it the first time."',
+      'Last night she told her sister: "Maybe I should quit. Everyone there is a better coder than me." She has not told anyone at SPRIX.'
+    ],
+    friendName:'Salma (classmate)', friendQuote:'"Honestly, Mariam explained it better than the video."'
+  },
+  {
+    id:'nour', team:3, avatar:'🏀', name:'Nour', nickname:'"The Planner in Progress"',
+    who:'16. Plays basketball three times a week. School exams are coming soon.',
+    clues:[
+      'Scored 55% on Knowledge Check 1. She was annoyed: "I studied for this!" She closed her laptop and went to training.',
+      'The next day she checked her wrong answers and noticed most came from Module 4 (values and purpose).',
+      'Rewatched Module 4 and asked one specific question in the community channel: "Is a value the same as a goal? I mixed them up in question 4."',
+      'Retook the check and scored 80%.',
+      'Rated herself honestly in the Skills Tracker: some 4s, some 1s. Added a note: "Rate again after Course 2."',
+      'Still worried: "I don\'t know how I\'ll manage this with exams."'
+    ],
+    friendName:'Hana (teammate)', friendQuote:'"She was grumpy on Monday, but she figured it out."'
+  },
+  {
+    id:'karim', team:4, avatar:'📣', name:'Karim', nickname:'"The Hype Man"',
+    who:'16. Very active on social media. Posts a motivational quote every day.',
+    clues:[
+      'Posted in the group chat: "Growth mindset is everything! Failure is just learning!"',
+      'Scored 55% on Knowledge Check 1. Retook it 7 times in one hour, clicking different answers until he reached 70%.',
+      'When a friend asked him to explain question 3, he said: "Doesn\'t matter, I passed."',
+      'Rated himself 3/5 on every skill in the Skills Tracker "to be safe".',
+      'Plans his Mastery Project: "I\'ll submit it in 20 minutes and fix it later."',
+      'Posted a new quote tonight: "Winners never stop trying."'
+    ],
+    friendName:'Ziad (friend)', friendQuote:'"He\'s always hyped, but I\'ve never seen him actually open the notes."'
+  }
+];
+
+const marked = {}; // { charId: Set(clueIndex) }
+characters.forEach(c => marked[c.id] = new Set());
+
+const teamRow = document.getElementById('teamRow');
+const filesGrid = document.getElementById('filesGrid');
+let selectedTeam = null;
+
+function renderTeams(){
+  teamRow.innerHTML = '';
+  for(let t=1; t<=4; t++){
+    const btn = document.createElement('button');
+    btn.className = 'team-btn' + (selectedTeam===t ? ' active' : '');
+    btn.textContent = 'Team ' + t;
+    btn.onclick = () => { selectedTeam = (selectedTeam===t) ? null : t; renderTeams(); renderFiles(); };
+    teamRow.appendChild(btn);
+  }
+}
+
+function renderFiles(){
+  filesGrid.innerHTML = '';
+  characters.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'file-card' + (selectedTeam===c.team ? ' your-case' : '');
+    card.style.animationDelay = (i*0.06)+'s';
+    card.onclick = () => openDossier(c);
+    card.innerHTML = `
+      ${selectedTeam===c.team ? '<div class="badge-yourcase">YOUR CASE</div>' : ''}
+      <div class="avatar">${c.avatar}</div>
+      <div class="file-meta">
+        <p class="name">${c.name}</p>
+        <p class="nick">${c.nickname}</p>
+        <div class="chiprow">
+          <span class="chip team">TEAM ${c.team}</span>
+          <span class="chip">CASE FILE</span>
+        </div>
+      </div>
+      <div class="open-arrow">›</div>
+    `;
+    filesGrid.appendChild(card);
+  });
+}
+
+const overlay = document.getElementById('overlay');
+const dossierEl = document.getElementById('dossier');
+
+function openDossier(c){
+  renderDossier(c);
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDossier(){
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+overlay.addEventListener('click', (e) => { if(e.target === overlay) closeDossier(); });
+
+function renderDossier(c){
+  dossierEl.innerHTML = `
+    <div class="dossier-handle"></div>
+    <div class="clip">📎</div>
+    <div class="stamp">CONFIDENTIAL</div>
+    <button class="close-btn" onclick="closeDossier()">✕</button>
+    <div class="chiprow">
+      <span class="chip team">TEAM ${c.team}</span>
+      <span class="chip">CASE FILE</span>
+    </div>
+    <h2>${c.avatar} ${c.name}</h2>
+    <p class="nick2">${c.nickname}</p>
+
+    <h3>Who they are</h3>
+    <p class="who">${c.who}</p>
+
+    <h3>Evidence from this week</h3>
+    <p class="mark-hint">Tap a clue to mark it as evidence.</p>
+    <div id="clueList"></div>
+
+    <h3>What a friend says</h3>
+    <div class="bubble">💬 ${c.friendQuote}<br><span style="opacity:.6; font-style:normal; font-size:12px;">— ${c.friendName}</span></div>
+  `;
+  const clueList = dossierEl.querySelector('#clueList');
+  c.clues.forEach((text, idx) => {
+    const el = document.createElement('div');
+    el.className = 'clue' + (marked[c.id].has(idx) ? ' marked' : '');
+    el.innerHTML = `<span class="clue-num">${idx+1}</span><span>${text}</span>`;
+    el.onclick = () => {
+      if(marked[c.id].has(idx)) marked[c.id].delete(idx); else marked[c.id].add(idx);
+      el.classList.toggle('marked');
+    };
+    clueList.appendChild(el);
+  });
+}
+
+renderTeams();
+renderFiles();
+</script>
+</body>
+</html>

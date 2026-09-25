@@ -31,6 +31,7 @@
 
   main{max-width:520px; margin:0 auto; padding:0 16px 70px; position:relative; z-index:1;}
   section{margin-top:-22px; margin-bottom:26px;}
+  main > section:first-of-type{margin-top:18px;}
   .panel{background:var(--card); border-radius:20px; padding:20px; box-shadow:0 14px 34px rgba(3,19,79,.14); border:1px solid var(--line);}
   .section-label{font-size:11px; font-weight:800; letter-spacing:1.2px; color:var(--purple); margin-bottom:8px;}
 
@@ -136,15 +137,21 @@
   .btn-no{background:var(--bg); color:var(--text); border:1px solid var(--line) !important;}
 
   /* timer */
-  .timer-panel{display:flex; align-items:center; justify-content:space-between; gap:12px;}
-  .timer-display{font-size:28px; font-weight:800; font-variant-numeric:tabular-nums; color:var(--navy);}
+  .sticky-timer{
+    position:sticky; top:0; z-index:40; background:var(--bg); border-bottom:1px solid var(--line);
+    box-shadow:0 6px 16px rgba(3,19,79,.10);
+  }
+  .timer-inner{
+    max-width:520px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .timer-display{font-size:24px; font-weight:800; font-variant-numeric:tabular-nums; color:var(--navy);}
   @media (prefers-color-scheme: dark){ .timer-display{color:#fff;} }
   .timer-btns{display:flex; gap:8px;}
   .timer-btns button{
-    border:none; border-radius:12px; padding:10px 16px; font-weight:700; font-family:inherit; cursor:pointer; font-size:13px;
+    border:none; border-radius:12px; padding:9px 15px; font-weight:700; font-family:inherit; cursor:pointer; font-size:13px;
     background:var(--blue); color:#fff;
   }
-  .timer-btns button.reset{background:var(--bg); color:var(--text); border:1px solid var(--line);}
+  .timer-btns button.reset{background:var(--card); color:var(--text); border:1px solid var(--line);}
 
   footer{text-align:center; font-size:12.5px; color:var(--muted); padding:10px 30px 0; line-height:1.6;}
 </style>
@@ -159,6 +166,16 @@
   <h1>Survive the Worst Week</h1>
   <p class="sub">One character. Ten problems. Seven days.</p>
 </header>
+
+<div class="sticky-timer">
+  <div class="timer-inner">
+    <div class="timer-display" id="timerDisplay">05:00</div>
+    <div class="timer-btns">
+      <button id="timerToggle">Start</button>
+      <button class="reset" id="timerReset">Reset</button>
+    </div>
+  </div>
+</div>
 
 <main>
 
@@ -212,7 +229,7 @@
 
     <section>
       <div class="panel">
-        <div class="section-label">🔒 LEVEL 3 · PLOT TWIST</div>
+        <div class="section-label">🔒 LEVEL 3 · SURPRISE EVENT</div>
         <div class="twist-card" id="twistCard">
           <div class="lock">🔒</div>
           <div class="lbl">Only open when your facilitator says so</div>
@@ -220,16 +237,6 @@
         </div>
         <div class="twist-revealed" id="twistRevealed"></div>
         <p class="replan" id="replanText" style="display:none;">Replan: what moves, what gets dropped?</p>
-      </div>
-    </section>
-
-    <section>
-      <div class="panel timer-panel">
-        <div class="timer-display" id="timerDisplay">17:00</div>
-        <div class="timer-btns">
-          <button id="timerToggle">Start</button>
-          <button class="reset" id="timerReset">Reset</button>
-        </div>
       </div>
     </section>
 
@@ -273,7 +280,7 @@ const characters = [
     twist:{em:'🌐', tt:'Internet down', dd:'No internet at home on Wednesday and Thursday.'}
   },
   {
-    id:'mariam', avatar:'📓', name:'Mariam', team:2, goal:'Be as good as the others.',
+    id:'mariam', avatar:'📓', name:'Mariam', team:2, goal:'Get better at coding.',
     extras:[
       {code:'C1', em:'🤝', tx:'She promised to help 3 friends with their projects', day:''},
       {code:'C2', em:'🔁', tx:'Redo Knowledge Check 1 "just to be sure"', day:''},
@@ -420,7 +427,8 @@ document.getElementById('confirmNo').onclick = () => {
 };
 
 /* timer */
-let timeLeft = 17*60;
+const TIMER_START = 5*60;
+let timeLeft = TIMER_START;
 let timerInterval = null;
 const timerDisplay = document.getElementById('timerDisplay');
 const timerToggle = document.getElementById('timerToggle');
@@ -440,7 +448,7 @@ timerToggle.onclick = () => {
   }
 };
 document.getElementById('timerReset').onclick = () => {
-  clearInterval(timerInterval); timerInterval = null; timeLeft = 17*60; timerToggle.textContent = 'Start'; renderTimer();
+  clearInterval(timerInterval); timerInterval = null; timeLeft = TIMER_START; timerToggle.textContent = 'Start'; renderTimer();
 };
 
 renderCharGrid();
